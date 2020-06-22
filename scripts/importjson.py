@@ -2,7 +2,7 @@ import json
 
 
 def loadjson_func(file_url):
-
+    #define variables
     source_file_url =file_url
     target_file_url ="../Data/output/events_summary.json"
 
@@ -15,11 +15,12 @@ def loadjson_func(file_url):
     stopsjson = {}
     stopsjson['Type'] = {}
     stopsjson['Data'] = []
-
+    #open the file to load for logic checking
     with open(source_file_url,'r') as json_data:
         classlist = json.load(json_data)
         i = 0
         while i < len(classlist):
+            #load only succesful journey posts (statuscode = 201)
             if classlist[i].get("requestMethod") == 'POST' and 'journey' in classlist[i].get("requestUri"):
                 if classlist[i]['responseStatusCode'] == 201:
 
@@ -50,7 +51,7 @@ def loadjson_func(file_url):
 
 
 
-
+            #load timetable calls and only successful ones, also logic to exclude lines calls as the uri in some cases was similar to the timetable one
             elif 'timetables' in classlist[i].get("requestUri") and '/api/lines' not in classlist[i].get("requestUri"):
                 if classlist[i]['responseStatusCode'] == 200:
                     responseContentBody = classlist[i].get("responseContentBody")
@@ -74,6 +75,7 @@ def loadjson_func(file_url):
                     "Timestamp": requestTimestamp
                     })
 
+            # load stops calls and only succesful ones statuscode = 200
             elif '/api/stops' in classlist[i].get("requestUri"):
                 if classlist[i]['responseStatusCode'] == 200:
                     requestContentBody = classlist[i].get("requestContentBody")
@@ -110,7 +112,7 @@ def loadjson_func(file_url):
 
     with open(target_file_url, 'a') as targetfile:
         targetfile.write(prettyjsonfinal)
-
+    #return the count of json files loaded
     c = len(prettyjsonfinal)
     return(c)
 
