@@ -1,4 +1,4 @@
-requests==2.24.0
+requests==2.31.0
 datetime==4.3
 psycopg2==2.8.5
 prettytable
